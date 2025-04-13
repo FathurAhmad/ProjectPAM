@@ -5,7 +5,45 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_layout"
     tools:context=".outcome">
+
+    <TextView
+        android:id="@+id/judul"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pengeluaran"
+        android:layout_marginVertical="25dp"
+        android:gravity="center"
+        android:background="@drawable/container_layout"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:layout_marginHorizontal="25dp"
+        android:paddingVertical="5dp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/outcome_list"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/outcome_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/container_layout"
+        android:layout_marginTop="25dp"
+        android:layout_marginHorizontal="25dp"
+        android:paddingBottom="15dp"
+        app:layout_constraintTop_toBottomOf="@id/judul"/>
+
+    <Button
+        android:id="@+id/tambah_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/container_layout"
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginVertical="15dp"
+        android:textColor="@color/white"
+        android:text="Tambah Transaksi"
+        app:layout_constraintBottom_toTopOf="@id/nav_bar"/>
 
     <LinearLayout
         android:id="@+id/nav_bar"
@@ -29,7 +67,7 @@
             android:layout_weight="1"
             android:background="@drawable/navbar_button"
             android:textColor="@color/white"
-            android:text="Income" />
+            android:text="Outcome" />
         <Button
             android:id="@+id/uang_keluar_button"
             android:layout_width="0dp"
@@ -47,5 +85,8 @@
             android:textColor="@color/white"
             android:text="Target" />
     </LinearLayout>
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,7 +34,7 @@ public class income extends AppCompatActivity {
         // Menambahkan objek Transaksi ke dalam listTransaksi
 
         listTransaksi.add(new Transaksi("Pemasukan", "Transaksi ke-1", "Beli sembako" ,10000));
-        listTransaksi.add(new Transaksi("Pengeluaran", "Transaksi ke-2", "Beli bensin",10000));
+        listTransaksi.add(new Transaksi("Pemasukan", "Transaksi ke-2", "Beli bensin",10000));
 
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);

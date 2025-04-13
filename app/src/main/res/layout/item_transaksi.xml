@@ -15,7 +15,8 @@
         android:text="Jenis Transaksi:"
         android:textStyle="bold"
         android:layout_margin="5dp"
-        android:textColor="@color/black" />
+        android:textColor="@color/black"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/deskripsi_transaksi"

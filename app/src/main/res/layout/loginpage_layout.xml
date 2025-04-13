@@ -93,11 +93,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="63dp"
         android:background="@drawable/loginpage_button"
-        android:backgroundTint="#F19C0B"
-        android:text="Login"
-        android:textColor="@color/white"
+        android:text="LOGIN"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="16dp"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@id/password_container"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/password_container" />
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

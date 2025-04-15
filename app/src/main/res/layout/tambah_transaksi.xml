@@ -2,24 +2,55 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <EditText
-        android:id="@+id/edit_nama"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@drawable/background_layout"
+    android:padding="15dp">
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/item_layout"
+        android:padding="10dp"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="Tambah Transaksi" />
+
+    <EditText
+        android:id="@+id/nama_transaksi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_layout"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
         android:hint="Nama Transaksi" />
 
     <EditText
-        android:id="@+id/edit_deskripsi"
+        android:id="@+id/deskripsi_transaksi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/item_layout"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
         android:hint="Deskripsi" />
 
     <EditText
-        android:id="@+id/edit_nominal"
+        android:id="@+id/nominal_transaksi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/item_layout"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
         android:inputType="numberDecimal"
         android:hint="Nominal" />
+
+    <Button
+        android:id="@+id/tambah_button"
+        android:background="@drawable/container_layout"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content"
+        android:text="Tambah"/>
+
 </LinearLayout>

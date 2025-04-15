@@ -1,5 +1,6 @@
 package com.example.projectpambaru;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,11 @@ public class TransaksiAdapter extends RecyclerView.Adapter<TransaksiAdapter.Tran
         holder.tvTransaksi.setText(item.getTransaksiKe());
         holder.tvDeskripsi.setText(item.getDeskripsi());
         holder.tvJumlah.setText(item.getJumlah());
+        if (item.getKategori().equalsIgnoreCase("pengeluaran")) {
+            holder.tvJumlah.setTextColor(Color.RED);
+        } else {
+            holder.tvJumlah.setTextColor(Color.GREEN);
+        }
     }
 
     @Override

@@ -23,7 +23,7 @@ public class loginpage extends AppCompatActivity {
         EditText username = findViewById(R.id.username);
         EditText password = findViewById(R.id.password);
 
-        Button login = findViewById(R.id.login);
+        Button login = findViewById(R.id.login_button);
         login.setOnClickListener(v -> {
             String user = username.getText().toString();
             String pass = password.getText().toString();
@@ -40,11 +40,6 @@ public class loginpage extends AppCompatActivity {
                     Toast.makeText(this, "Username & Password tidak ditemukan", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.login), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
         });
     }
 }

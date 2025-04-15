@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +18,7 @@ import java.util.List;
 
 public class dashboard extends AppCompatActivity {
 
+    TextView nominal;
     RecyclerView recyclerView;
     TransaksiAdapter adapter;
     List<TransaksiItem> transaksiList;
@@ -33,9 +33,12 @@ public class dashboard extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         transaksiList = new ArrayList<>();
-        transaksiList.add(new TransaksiItem("Pengeluaran", "Transaksi ke-1", "Membeli kopi", "Rp 20.000"));
-        transaksiList.add(new TransaksiItem("Pengeluaran", "Transaksi ke-2", "Bayar parkir", "Rp 5.000"));
-        transaksiList.add(new TransaksiItem("Pengeluaran", "Transaksi ke-3", "Makan siang", "Rp 30.000"));
+        for (Transaksi item : DatabaseTransaksi.getTransaksiList()) {
+            transaksiList.add(new TransaksiItem(item.getJenisTransaksi(), item.getNama(), item.getDeskripsi(), String.valueOf(item.getNominal())));
+        }
+
+        nominal = findViewById(R.id.balance);
+        nominal.setText(String.valueOf("RP" + DatabaseTransaksi.getNominal()));
 
         adapter = new TransaksiAdapter(transaksiList);
         recyclerView.setAdapter(adapter);

@@ -2,11 +2,13 @@ package com.example.projectpambaru;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Adapter;
-import android.widget.AdapterView;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -14,14 +16,11 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class income extends AppCompatActivity {
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
     AdapterTransaksi adapter; // Ubah tipe variabel adapter
-    List<Transaksi> listTransaksi;
+    Button btnTambah;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,19 +28,24 @@ public class income extends AppCompatActivity {
         setContentView(R.layout.income_layout);
 
         recyclerView = findViewById(R.id.income_list);
-        listTransaksi = new ArrayList<>();
 
         // Menambahkan objek Transaksi ke dalam listTransaksi
-
-        listTransaksi.add(new Transaksi("Pemasukan", "Transaksi ke-1", "Beli sembako" ,10000));
-        listTransaksi.add(new Transaksi("Pemasukan", "Transaksi ke-2", "Beli bensin",10000));
 
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
         // Membuat instance AdapterTransaksi
-        adapter = new AdapterTransaksi(this, listTransaksi);
+        adapter = new AdapterTransaksi(this, DatabaseTransaksi.getTransaksiPemasukan());
         recyclerView.setAdapter(adapter);
+
+        btnTambah = findViewById(R.id.tambah_button);
+
+        btnTambah.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopup();
+            }
+        });
 
         Button home = findViewById(R.id.home_button);
         Button income = findViewById(R.id.uang_masuk_button);
@@ -78,5 +82,35 @@ public class income extends AppCompatActivity {
             return insets;
         });
     }
+    private void showPopup() {
+        // Inflate layout popup
+        LayoutInflater inflater = getLayoutInflater();
+        View popupView = inflater.inflate(R.layout.tambah_transaksi, null);
 
+        // Buat AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(income.this);
+        builder.setView(popupView);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+
+
+        // Tombol close di dalam popup
+        Button btnClose = popupView.findViewById(R.id.tambah_button);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView namaTransaksi = popupView.findViewById(R.id.nama_transaksi);
+                TextView deskripsiTransaksi = popupView.findViewById(R.id.deskripsi_transaksi);
+                TextView nominalTransaksi = popupView.findViewById(R.id.nominal_transaksi);
+
+                String nama = namaTransaksi.getText().toString();
+                String deskripsi = deskripsiTransaksi.getText().toString();
+                double nominal = Double.parseDouble(nominalTransaksi.getText().toString());
+                DatabaseTransaksi.tambahTransaksi(new Transaksi("Pemasukan", nama, deskripsi, nominal));
+                dialog.dismiss();
+            }
+        });
+    }
 }

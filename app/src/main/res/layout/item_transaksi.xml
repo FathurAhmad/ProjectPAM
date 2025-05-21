@@ -5,8 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/item_layout"
     android:padding="5dp"
-    android:layout_marginHorizontal="15dp"
-    android:layout_marginTop="15dp">
+    android:layout_marginBottom="15dp">
 
     <TextView
         android:id="@+id/jenis_transaksi"
@@ -24,7 +23,8 @@
         android:layout_height="wrap_content"
         android:text="Nama Transaksi:"
         android:layout_margin="5dp"
-        android:textColor="@color/black" />
+        android:textColor="@color/black"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/nama_transaksi"
@@ -34,7 +34,6 @@
         android:layout_margin="5dp"
         android:textColor="@color/black" />
 
-
     <TextView
         android:id="@+id/nominal_transaksi"
         android:layout_width="wrap_content"
@@ -43,4 +42,19 @@
         android:layout_margin="5dp"
         android:textColor="@color/black" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end">
+        <TextView
+            android:id="@+id/lihat_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lihat detail"
+            android:layout_margin="5dp"
+            android:textSize="15dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
 </LinearLayout>

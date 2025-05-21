@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class income extends AppCompatActivity {
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
-    AdapterTransaksi adapter; // Ubah tipe variabel adapter
+    AdapterTransaksi adapter;
     Button btnTambah;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +93,6 @@ public class income extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
 
-
-
         // Tombol close di dalam popup
         Button btnClose = popupView.findViewById(R.id.tambah_button);
         btnClose.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +101,6 @@ public class income extends AppCompatActivity {
                 TextView namaTransaksi = popupView.findViewById(R.id.nama_transaksi);
                 TextView deskripsiTransaksi = popupView.findViewById(R.id.deskripsi_transaksi);
                 TextView nominalTransaksi = popupView.findViewById(R.id.nominal_transaksi);
-
                 String nama = namaTransaksi.getText().toString();
                 String deskripsi = deskripsiTransaksi.getText().toString();
                 double nominal = Double.parseDouble(nominalTransaksi.getText().toString());

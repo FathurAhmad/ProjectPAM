@@ -10,7 +10,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class target extends AppCompatActivity {
+public class TargetActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,25 +24,25 @@ public class target extends AppCompatActivity {
         Button target = findViewById(R.id.target_button);
 
         home.setOnClickListener(v -> {
-            Intent intent = new Intent(target.this, dashboard.class);
+            Intent intent = new Intent(TargetActivity.this, dashboard.class);
             startActivity(intent);
             finish();
         });
 
         income.setOnClickListener(v -> {
-            Intent intent = new Intent(target.this, income.class);
+            Intent intent = new Intent(TargetActivity.this, income.class);
             startActivity(intent);
             finish();
         });
 
         outcome.setOnClickListener(v -> {
-            Intent intent = new Intent(target.this, outcome.class);
+            Intent intent = new Intent(TargetActivity.this, outcome.class);
             startActivity(intent);
             finish();
         });
 
         target.setOnClickListener(v -> {
-            Intent intent = new Intent(target.this, target.class);
+            Intent intent = new Intent(TargetActivity.this, TargetActivity.class);
             startActivity(intent);
             finish();
         });

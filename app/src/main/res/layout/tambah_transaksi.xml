@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    android:background="@drawable/background_layout"
     android:padding="15dp">
     <TextView
         android:layout_width="match_parent"
@@ -43,6 +42,16 @@
         android:padding="10dp"
         android:inputType="numberDecimal"
         android:hint="Nominal" />
+
+    <Button
+        android:id="@+id/upload_file_button"
+        android:background="@drawable/container_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
+        android:layout_gravity="end"
+        android:text="Upload Gambar"/>
 
     <Button
         android:id="@+id/tambah_button"

@@ -18,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -84,6 +85,9 @@ public class loginpage extends AppCompatActivity implements View.OnClickListener
 
     public void login(String email, String password) {
             if (!validateForm()) return;
+        FirebaseApp app = FirebaseApp.getInstance();
+        Log.d("FirebaseInit", "Firebase initialized with name: " + app.getName());
+        Log.d("FirebaseInit", "Firebase options: " + app.getOptions().getProjectId());
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

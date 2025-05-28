@@ -71,7 +71,7 @@ public class income extends AppCompatActivity {
         });
 
         target.setOnClickListener(v -> {
-            Intent intent = new Intent(income.this, target.class);
+            Intent intent = new Intent(income.this, TargetActivity.class);
             startActivity(intent);
             finish();
         });

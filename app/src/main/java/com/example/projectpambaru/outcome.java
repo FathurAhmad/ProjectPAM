@@ -78,7 +78,7 @@ public class outcome extends AppCompatActivity {
         });
 
         target.setOnClickListener(v -> {
-            Intent intent = new Intent(outcome.this, target.class);
+            Intent intent = new Intent(outcome.this, TargetActivity.class);
             startActivity(intent);
             finish();
         });

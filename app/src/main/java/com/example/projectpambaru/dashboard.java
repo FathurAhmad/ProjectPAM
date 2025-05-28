@@ -13,7 +13,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
-import androidx.core.view.LayoutInflaterCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -94,7 +93,7 @@ public class dashboard extends AppCompatActivity {
         });
 
         target.setOnClickListener(v -> {
-            Intent intent = new Intent(dashboard.this, target.class);
+            Intent intent = new Intent(dashboard.this, TargetActivity.class);
             startActivity(intent);
             finish();
         });

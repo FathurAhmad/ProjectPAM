@@ -36,7 +36,7 @@ import com.google.firebase.storage.UploadTask; // Tambahkan
 
 import java.util.UUID; // Tambahkan untuk membuat nama file unik
 
-public class income extends AppCompatActivity {
+public class Income extends AppCompatActivity {
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
     AdapterTransaksi adapter;
@@ -78,25 +78,25 @@ public class income extends AppCompatActivity {
         Button target = findViewById(R.id.target_button);
 
         home.setOnClickListener(v -> {
-            Intent intent = new Intent(income.this, dashboard.class);
+            Intent intent = new Intent(Income.this, Dashboard.class);
             startActivity(intent);
             finish();
         });
 
         income.setOnClickListener(v -> {
-            Intent intent = new Intent(income.this, income.class);
+            Intent intent = new Intent(Income.this, Income.class);
             startActivity(intent);
             finish();
         });
 
         outcome.setOnClickListener(v -> {
-            Intent intent = new Intent(income.this, outcome.class);
+            Intent intent = new Intent(Income.this, Outcome.class);
             startActivity(intent);
             finish();
         });
 
         target.setOnClickListener(v -> {
-            Intent intent = new Intent(income.this, TargetActivity.class);
+            Intent intent = new Intent(Income.this, TargetActivity.class);
             startActivity(intent);
             finish();
         });
@@ -114,7 +114,7 @@ private void showPopup() {
     View popupView = inflater.inflate(R.layout.tambah_transaksi, null);
 
     // Buat AlertDialog
-    AlertDialog.Builder builder = new AlertDialog.Builder(income.this);
+    AlertDialog.Builder builder = new AlertDialog.Builder(Income.this);
     builder.setView(popupView);
 
     AlertDialog dialog = builder.create();
@@ -173,7 +173,7 @@ private void showPopup() {
             if (selectedFileUri != null) {
                 uploadFileToFirebaseStorage(selectedFileUri);
             } else {
-                Toast.makeText(income.this, "Transaksi Pemasukan berhasil ditambahkan (tanpa bukti file).", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Income.this, "Transaksi Pemasukan berhasil ditambahkan (tanpa bukti file).", Toast.LENGTH_SHORT).show();
             }
             // --- Akhir Logika Upload File ---
 
@@ -290,7 +290,7 @@ private void showPopup() {
                         @Override
                         public void onSuccess(Uri downloadUri) {
                             String fileUrl = downloadUri.toString();
-                            Toast.makeText(income.this, "Upload bukti berhasil! URL: " + fileUrl, Toast.LENGTH_LONG).show();
+                            Toast.makeText(Income.this, "Upload bukti berhasil! URL: " + fileUrl, Toast.LENGTH_LONG).show();
                             // TODO: Penting! Simpan 'fileUrl' ini. Anda bisa menambahkannya ke objek Transaksi
                             // atau mengirimnya ke Firebase Firestore/Realtime Database terkait dengan transaksi ini.
                         }
@@ -300,7 +300,7 @@ private void showPopup() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     // Upload gagal
-                    Toast.makeText(income.this, "Upload bukti gagal: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(Income.this, "Upload bukti gagal: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
             // Anda juga bisa menambahkan .addOnProgressListener() untuk menampilkan progress bar upload

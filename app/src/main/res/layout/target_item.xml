@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/item_layout">
+
+    <TextView
+        android:id="@+id/tvTarget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nama Target"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvNominal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nominal"/>
+
+    <Button
+        android:id="@+id/btn_mark_as_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mark As Done"
+        android:layout_gravity="end"
+        android:background="@drawable/container_layout"
+        android:padding="10dp"
+        android:textColor="@color/white"/>
+
+</LinearLayout>

@@ -6,6 +6,10 @@ public class Transaksi {
     private String deskripsi;
     private double nominal;
 
+    public Transaksi() {
+
+    }
+
     public Transaksi(String jenisTransaksi, String nama, String deskripsi, double nominal) {
         this.jenisTransaksi = jenisTransaksi;
         this.nama = nama;

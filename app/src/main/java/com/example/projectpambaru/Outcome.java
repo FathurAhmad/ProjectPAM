@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class outcome extends AppCompatActivity {
+public class Outcome extends AppCompatActivity {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
@@ -60,25 +60,25 @@ public class outcome extends AppCompatActivity {
         Button target = findViewById(R.id.target_button);
 
         home.setOnClickListener(v -> {
-            Intent intent = new Intent(outcome.this, dashboard.class);
+            Intent intent = new Intent(Outcome.this, Dashboard.class);
             startActivity(intent);
             finish();
         });
 
         income.setOnClickListener(v -> {
-            Intent intent = new Intent(outcome.this, income.class);
+            Intent intent = new Intent(Outcome.this, Income.class);
             startActivity(intent);
             finish();
         });
 
         outcome.setOnClickListener(v -> {
-            Intent intent = new Intent(outcome.this, outcome.class);
+            Intent intent = new Intent(Outcome.this, Outcome.class);
             startActivity(intent);
             finish();
         });
 
         target.setOnClickListener(v -> {
-            Intent intent = new Intent(outcome.this, TargetActivity.class);
+            Intent intent = new Intent(Outcome.this, TargetActivity.class);
             startActivity(intent);
             finish();
         });
@@ -96,7 +96,7 @@ public class outcome extends AppCompatActivity {
         View popupView = inflater.inflate(R.layout.tambah_transaksi, null);
 
         // Buat AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(outcome.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Outcome.this);
         builder.setView(popupView);
 
         AlertDialog dialog = builder.create();

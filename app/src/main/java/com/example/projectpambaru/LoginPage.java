@@ -12,9 +12,6 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,7 +20,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class loginpage extends AppCompatActivity implements View.OnClickListener{
+public class LoginPage extends AppCompatActivity implements View.OnClickListener{
 
     EditText username, password;
     private FirebaseAuth mAuth;
@@ -73,10 +70,10 @@ public class loginpage extends AppCompatActivity implements View.OnClickListener
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
-                            Toast.makeText(loginpage.this, user.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginPage.this, user.toString(), Toast.LENGTH_SHORT).show();
                         } else {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(loginpage.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginPage.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
                     }
@@ -95,10 +92,10 @@ public class loginpage extends AppCompatActivity implements View.OnClickListener
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(loginpage.this, "Login sebagai: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginPage.this, "Login sebagai: " + user.getEmail(), Toast.LENGTH_SHORT).show();
                             updateUI(user);
                         } else {
-                            Toast.makeText(loginpage.this, "Login gagal.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginPage.this, "Login gagal.", Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
                     }
@@ -127,10 +124,10 @@ public class loginpage extends AppCompatActivity implements View.OnClickListener
 
     public void updateUI(FirebaseUser user) {
         if (user != null) {
-            Intent intent = new Intent(loginpage.this, dashboard.class);
+            Intent intent = new Intent(LoginPage.this, Dashboard.class);
             startActivity(intent);
         } else {
-            Toast.makeText(loginpage.this, "Log In First", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginPage.this, "Log In First", Toast.LENGTH_SHORT).show();
         }
     }
 }

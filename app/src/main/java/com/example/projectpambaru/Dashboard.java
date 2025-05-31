@@ -18,15 +18,18 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class dashboard extends AppCompatActivity {
+public class Dashboard extends AppCompatActivity {
 
     TextView nominal;
     RecyclerView recyclerView;
     TransaksiAdapter adapter;
     List<TransaksiItem> transaksiList;
+    Button btn_logout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,8 @@ public class dashboard extends AppCompatActivity {
         iconProfile.setOnClickListener(v -> {
             LayoutInflater inflater = getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.dialog_profile, null);
+            btn_logout = dialogView.findViewById(R.id.button_logout);
+
 
             ImageView imageViewProfile = dialogView.findViewById(R.id.imageViewProfile);
             TextView textViewUbahProfile = dialogView.findViewById(R.id.textViewUbahFoto);
@@ -69,31 +74,39 @@ public class dashboard extends AppCompatActivity {
             textViewUbahProfile.setOnClickListener(v2 -> {
                 Intent profileIntent = new Intent(Intent.ACTION_PICK);
                 profileIntent.setType("image/*");
+
                 startActivityForResult(profileIntent, 100);
                 dialog.dismiss();
+            });
+
+            btn_logout.setOnClickListener(v3 -> {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(Dashboard.this, LoginPage.class);
+                startActivity(intent);
+                finish();
             });
         });
 
         home.setOnClickListener(v -> {
-            Intent intent = new Intent(dashboard.this, dashboard.class);
+            Intent intent = new Intent(Dashboard.this, Dashboard.class);
             startActivity(intent);
             finish();
         });
 
         income.setOnClickListener(v -> {
-            Intent intent = new Intent(dashboard.this, income.class);
+            Intent intent = new Intent(Dashboard.this, Income.class);
             startActivity(intent);
             finish();
         });
 
         outcome.setOnClickListener(v -> {
-            Intent intent = new Intent(dashboard.this, outcome.class);
+            Intent intent = new Intent(Dashboard.this, Outcome.class);
             startActivity(intent);
             finish();
         });
 
         target.setOnClickListener(v -> {
-            Intent intent = new Intent(dashboard.this, TargetActivity.class);
+            Intent intent = new Intent(Dashboard.this, TargetActivity.class);
             startActivity(intent);
             finish();
         });

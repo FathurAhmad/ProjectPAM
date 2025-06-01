@@ -35,7 +35,16 @@ import com.google.firebase.storage.FirebaseStorage; // Tambahkan
 import com.google.firebase.storage.StorageReference; // Tambahkan
 import com.google.firebase.storage.UploadTask; // Tambahkan
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID; // Tambahkan untuk membuat nama file unik
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class IncomeActivity extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -174,7 +183,7 @@ private void showPopup() {
 
             // --- Logika Upload File ke Firebase Storage ---
             if (selectedFileUri != null) {
-                uploadFileToFirebaseStorage(selectedFileUri);
+                uploadFileToSupabaseStorage(selectedFileUri);
             } else {
                 Toast.makeText(IncomeActivity.this, "Transaksi Pemasukan berhasil ditambahkan (tanpa bukti file).", Toast.LENGTH_SHORT).show();
             }
@@ -273,40 +282,54 @@ private void showPopup() {
         return result;
     }
 
-    // --- Fungsi Upload ke Firebase Storage ---
-    private void uploadFileToFirebaseStorage(Uri fileUri) {
-        if (fileUri != null) {
-            // Buat referensi ke Firebase Storage
-            // Path: "bukti_pemasukan/UUID_namafile.ekstensi"
-            String fileName = "bukti_pemasukan/" + UUID.randomUUID().toString() + "_" + getFileName(fileUri);
-            StorageReference fileRef = storageReference.child(fileName);
+    private void uploadFileToSupabaseStorage(Uri fileUri) {
+        if (fileUri == null) return;
 
-            // Mulai proses upload
-            UploadTask uploadTask = fileRef.putFile(fileUri);
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(fileUri);
+            byte[] fileBytes = new byte[inputStream.available()];
+            inputStream.read(fileBytes);
+            inputStream.close();
 
-            // Pantau status upload
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            String fileName = UUID.randomUUID().toString() + "_" + getFileName(fileUri);
+            String supabaseUrl = "https://bisvlneeendtwzxtygpj.supabase.co";
+            String bucketName = "buatgambar";
+            String uploadUrl = supabaseUrl + "/storage/v1/object/" + bucketName + "/" + fileName;
+
+            OkHttpClient client = new OkHttpClient();
+
+            RequestBody requestBody = RequestBody.create(fileBytes);
+
+            Request request = new Request.Builder()
+                    .url(uploadUrl)
+                    .header("apikey", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpc3ZsbmVlZW5kdHd6eHR5Z3BqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3OTM5NTksImV4cCI6MjA2NDM2OTk1OX0.CvM3dQKKrdkpB6Sh3346QgtzJq3hSCOjxjdiS3KQmlM")
+                    .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpc3ZsbmVlZW5kdHd6eHR5Z3BqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3OTM5NTksImV4cCI6MjA2NDM2OTk1OX0.CvM3dQKKrdkpB6Sh3346QgtzJq3hSCOjxjdiS3KQmlM")
+                    .put(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // Upload berhasil, dapatkan URL download
-                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri downloadUri) {
-                            String fileUrl = downloadUri.toString();
-                            Toast.makeText(IncomeActivity.this, "Upload bukti berhasil! URL: " + fileUrl, Toast.LENGTH_LONG).show();
-                            // TODO: Penting! Simpan 'fileUrl' ini. Anda bisa menambahkannya ke objek Transaksi
-                            // atau mengirimnya ke Firebase Firestore/Realtime Database terkait dengan transaksi ini.
+                public void onFailure(Call call, IOException e) {
+                    runOnUiThread(() -> Toast.makeText(IncomeActivity.this, "Upload gagal: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    runOnUiThread(() -> {
+                        if (response.isSuccessful()) {
+                            String fileUrl = supabaseUrl + "/storage/v1/object/public/" + bucketName + "/" + fileName;
+                            Toast.makeText(IncomeActivity.this, "Upload ke Supabase berhasil!\n" + fileUrl, Toast.LENGTH_LONG).show();
+                            // Simpan URL ke database lokal atau remote
+                        } else {
+                            Toast.makeText(IncomeActivity.this, "Gagal upload Supabase: " + response.message(), Toast.LENGTH_LONG).show();
                         }
                     });
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    // Upload gagal
-                    Toast.makeText(IncomeActivity.this, "Upload bukti gagal: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                }
             });
-            // Anda juga bisa menambahkan .addOnProgressListener() untuk menampilkan progress bar upload
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Error saat membaca file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
 }

@@ -293,7 +293,7 @@ private void showPopup() {
 
             String fileName = UUID.randomUUID().toString() + "_" + getFileName(fileUri);
             String supabaseUrl = "https://bisvlneeendtwzxtygpj.supabase.co";
-            String bucketName = "buatgambar";
+            String bucketName = "income";
             String uploadUrl = supabaseUrl + "/storage/v1/object/" + bucketName + "/" + fileName;
 
             OkHttpClient client = new OkHttpClient();

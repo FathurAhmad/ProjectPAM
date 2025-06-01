@@ -27,7 +27,8 @@
         android:text="Mark As Done"
         android:layout_gravity="end"
         android:background="@drawable/container_layout"
-        android:padding="10dp"
+        android:paddingHorizontal="15dp"
+        android:layout_marginTop="10dp"
         android:textColor="@color/white"/>
 
 </LinearLayout>

@@ -19,11 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Outcome extends AppCompatActivity {
+public class OutcomeActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
-    AdapterTransaksi adapter; // Ubah tipe variabel adapter
+    TransaksiAdapter adapter; // Ubah tipe variabel adapter
     List<Transaksi> listTransaksi;
 
     Button btnTambah;
@@ -31,7 +31,7 @@ public class Outcome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.outcome_layout);
+        setContentView(R.layout.activity_outcome);
 
         recyclerView = findViewById(R.id.outcome_list);
         listTransaksi = new ArrayList<>();
@@ -42,7 +42,7 @@ public class Outcome extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         // Membuat instance AdapterTransaksi
-        adapter = new AdapterTransaksi(this, DatabaseTransaksi.getTransaksiPengeluaran());
+        adapter = new TransaksiAdapter(this, DatabaseTransaksi.getTransaksiPengeluaran());
         recyclerView.setAdapter(adapter);
 
         btnTambah = findViewById(R.id.tambah_button);
@@ -60,25 +60,25 @@ public class Outcome extends AppCompatActivity {
         Button target = findViewById(R.id.target_button);
 
         home.setOnClickListener(v -> {
-            Intent intent = new Intent(Outcome.this, Dashboard.class);
+            Intent intent = new Intent(OutcomeActivity.this, DashboardActivity.class);
             startActivity(intent);
             finish();
         });
 
         income.setOnClickListener(v -> {
-            Intent intent = new Intent(Outcome.this, Income.class);
+            Intent intent = new Intent(OutcomeActivity.this, IncomeActivity.class);
             startActivity(intent);
             finish();
         });
 
         outcome.setOnClickListener(v -> {
-            Intent intent = new Intent(Outcome.this, Outcome.class);
+            Intent intent = new Intent(OutcomeActivity.this, OutcomeActivity.class);
             startActivity(intent);
             finish();
         });
 
         target.setOnClickListener(v -> {
-            Intent intent = new Intent(Outcome.this, TargetActivity.class);
+            Intent intent = new Intent(OutcomeActivity.this, TargetActivity.class);
             startActivity(intent);
             finish();
         });
@@ -96,7 +96,7 @@ public class Outcome extends AppCompatActivity {
         View popupView = inflater.inflate(R.layout.tambah_transaksi, null);
 
         // Buat AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(Outcome.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(OutcomeActivity.this);
         builder.setView(popupView);
 
         AlertDialog dialog = builder.create();
@@ -110,11 +110,11 @@ public class Outcome extends AppCompatActivity {
                 TextView namaTransaksi = popupView.findViewById(R.id.nama_transaksi);
                 TextView deskripsiTransaksi = popupView.findViewById(R.id.deskripsi_transaksi);
                 TextView nominalTransaksi = popupView.findViewById(R.id.nominal_transaksi);
-
                 String nama = namaTransaksi.getText().toString();
                 String deskripsi = deskripsiTransaksi.getText().toString();
                 double nominal = Double.parseDouble(nominalTransaksi.getText().toString());
                 DatabaseTransaksi.tambahTransaksi(new Transaksi("Pengeluaran", nama, deskripsi, nominal));
+                adapter.notifyDataSetChanged();
                 dialog.dismiss();
             }
         });

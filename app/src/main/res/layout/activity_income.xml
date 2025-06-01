@@ -6,37 +6,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_layout"
-    tools:context=".Outcome">
+    tools:context=".IncomeActivity">
 
     <TextView
         android:id="@+id/judul"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Pengeluaran"
-        android:layout_marginVertical="25dp"
-        android:gravity="center"
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginVertical="15dp"
         android:background="@drawable/container_layout"
+        android:gravity="center"
+        android:paddingVertical="5dp"
+        android:text="Pemasukan"
+        android:textColor="@color/white"
         android:textSize="30dp"
         android:textStyle="bold"
-        android:layout_marginHorizontal="25dp"
-        android:paddingVertical="5dp"
-        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/income_list"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/outcome_list"/>
+        tools:layout_editor_absoluteX="0dp" />
+
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/outcome_list"
-        android:nestedScrollingEnabled="true"
+        android:id="@+id/income_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/container_layout"
-        android:layout_marginBottom="15dp"
         android:layout_marginHorizontal="25dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/container_layout"
+        android:clipToPadding="false"
         android:padding="15dp"
-        app:layout_constraintTop_toBottomOf="@id/judul"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tambah_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tambah_button"/>
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/judul" />
 
     <Button
         android:id="@+id/tambah_button"
@@ -61,7 +64,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/navbar_button"
+            android:background="@drawable/button_navbar"
             android:textColor="@color/white"
             android:text="Home" />
         <Button
@@ -69,15 +72,15 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/navbar_button"
+            android:background="@drawable/button_navbar"
             android:textColor="@color/white"
-            android:text="Outcome" />
+            android:text="Income" />
         <Button
             android:id="@+id/uang_keluar_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/navbar_button"
+            android:background="@drawable/button_navbar"
             android:textColor="@color/white"
             android:text="Outcome" />
         <Button
@@ -85,7 +88,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/navbar_button"
+            android:background="@drawable/button_navbar"
             android:textColor="@color/white"
             android:text="Target" />
     </LinearLayout>

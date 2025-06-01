@@ -24,7 +24,6 @@ public class Transaksi {
     public String getNama() {
         return nama;
     }
-
     public String getDeskripsi() {
         return deskripsi;
     }

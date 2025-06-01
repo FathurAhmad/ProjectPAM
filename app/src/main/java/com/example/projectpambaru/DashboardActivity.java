@@ -1,6 +1,8 @@
 package com.example.projectpambaru;
 
 import android.content.Intent;
+import android.icu.text.DecimalFormat;
+import android.icu.text.ListFormatter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,36 +21,43 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Dashboard extends AppCompatActivity {
+public class DashboardActivity extends AppCompatActivity {
 
     TextView nominal;
     RecyclerView recyclerView;
     TransaksiAdapter adapter;
-    List<TransaksiItem> transaksiList;
+    List<Transaksi> transaksiList;
+    DatabaseReference databaseReference;
+    TextView tvUsername;
     Button btn_logout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.dashboard_layout);
+        setContentView(R.layout.activity_dashboard);
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         transaksiList = new ArrayList<>();
         for (Transaksi item : DatabaseTransaksi.getTransaksiList()) {
-            transaksiList.add(new TransaksiItem(item.getJenisTransaksi(), item.getNama(), item.getDeskripsi(), String.valueOf(item.getNominal())));
+            transaksiList.add(new Transaksi(item.getJenisTransaksi(), item.getNama(), item.getDeskripsi(), item.getNominal()));
         }
 
         nominal = findViewById(R.id.balance);
-        nominal.setText(String.valueOf("RP" + DatabaseTransaksi.getNominal()));
+        int total = DatabaseTransaksi.getNominal();
+        String format = formatAngka(total);
+        nominal.setText(String.valueOf("Rp" + format));
 
-        adapter = new TransaksiAdapter(transaksiList);
+        adapter = new TransaksiAdapter(this, transaksiList);
         recyclerView.setAdapter(adapter);
 
         Button home = findViewById(R.id.home_button);
@@ -61,7 +70,11 @@ public class Dashboard extends AppCompatActivity {
             LayoutInflater inflater = getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.dialog_profile, null);
             btn_logout = dialogView.findViewById(R.id.button_logout);
+            tvUsername = dialogView.findViewById(R.id.tvUsername);
 
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            String username = firebaseAuth.getCurrentUser().getEmail();
+            tvUsername.setText(username);
 
             ImageView imageViewProfile = dialogView.findViewById(R.id.imageViewProfile);
             TextView textViewUbahProfile = dialogView.findViewById(R.id.textViewUbahFoto);
@@ -70,6 +83,8 @@ public class Dashboard extends AppCompatActivity {
             builder.setView(dialogView);
             AlertDialog dialog = builder.create();
             dialog.show();
+
+
 
             textViewUbahProfile.setOnClickListener(v2 -> {
                 Intent profileIntent = new Intent(Intent.ACTION_PICK);
@@ -81,32 +96,32 @@ public class Dashboard extends AppCompatActivity {
 
             btn_logout.setOnClickListener(v3 -> {
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(Dashboard.this, LoginPage.class);
+                Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             });
         });
 
         home.setOnClickListener(v -> {
-            Intent intent = new Intent(Dashboard.this, Dashboard.class);
+            Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
             startActivity(intent);
             finish();
         });
 
         income.setOnClickListener(v -> {
-            Intent intent = new Intent(Dashboard.this, Income.class);
+            Intent intent = new Intent(DashboardActivity.this, IncomeActivity.class);
             startActivity(intent);
             finish();
         });
 
         outcome.setOnClickListener(v -> {
-            Intent intent = new Intent(Dashboard.this, Outcome.class);
+            Intent intent = new Intent(DashboardActivity.this, OutcomeActivity.class);
             startActivity(intent);
             finish();
         });
 
         target.setOnClickListener(v -> {
-            Intent intent = new Intent(Dashboard.this, TargetActivity.class);
+            Intent intent = new Intent(DashboardActivity.this, TargetActivity.class);
             startActivity(intent);
             finish();
         });
@@ -127,5 +142,10 @@ public class Dashboard extends AppCompatActivity {
             ImageView imageViewUtama = findViewById(R.id.profile_image);
             imageViewUtama.setImageURI(selectedImage);
         }
+    }
+
+    public static String formatAngka (int angka) {
+        DecimalFormat format = new DecimalFormat("#,###");
+        return format.format(angka).replace(",", ".");
     }
 }

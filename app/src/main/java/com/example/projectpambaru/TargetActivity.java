@@ -38,7 +38,7 @@ public class TargetActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.target_layout);
+        setContentView(R.layout.activity_target);
 
         recyclerView = findViewById(R.id.target_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -103,26 +103,25 @@ public class TargetActivity extends AppCompatActivity {
             });
         });
 
-
         Button home = findViewById(R.id.home_button);
         Button income = findViewById(R.id.uang_masuk_button);
         Button outcome = findViewById(R.id.uang_keluar_button);
         Button target = findViewById(R.id.target_button);
 
         home.setOnClickListener(v -> {
-            Intent intent = new Intent(TargetActivity.this, Dashboard.class);
+            Intent intent = new Intent(TargetActivity.this, DashboardActivity.class);
             startActivity(intent);
             finish();
         });
 
         income.setOnClickListener(v -> {
-            Intent intent = new Intent(TargetActivity.this, Income.class);
+            Intent intent = new Intent(TargetActivity.this, IncomeActivity.class);
             startActivity(intent);
             finish();
         });
 
         outcome.setOnClickListener(v -> {
-            Intent intent = new Intent(TargetActivity.this, Outcome.class);
+            Intent intent = new Intent(TargetActivity.this, OutcomeActivity.class);
             startActivity(intent);
             finish();
         });

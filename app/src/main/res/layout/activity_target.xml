@@ -62,7 +62,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/navbar_button"
+            android:background="@drawable/button_navbar"
             android:textColor="@color/white"
             android:text="Home" />
         <Button
@@ -70,7 +70,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/navbar_button"
+            android:background="@drawable/button_navbar"
             android:textColor="@color/white"
             android:text="Income" />
         <Button
@@ -78,7 +78,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/navbar_button"
+            android:background="@drawable/button_navbar"
             android:textColor="@color/white"
             android:text="Outcome" />
         <Button
@@ -86,7 +86,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/navbar_button"
+            android:background="@drawable/button_navbar"
             android:textColor="@color/white"
             android:text="Target" />
     </LinearLayout>

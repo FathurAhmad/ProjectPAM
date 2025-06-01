@@ -16,7 +16,7 @@
         android:theme="@style/Theme.ProjectPAMBaru"
         tools:targetApi="31">
         <activity
-            android:name=".LoginPage"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,15 +25,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Dashboard"
+            android:name=".DashboardActivity"
             android:exported="true">
         </activity>
         <activity
-            android:name=".Income"
+            android:name=".IncomeActivity"
             android:exported="true">
         </activity>
         <activity
-            android:name=".Outcome"
+            android:name=".OutcomeActivity"
             android:exported="true">
         </activity>
         <activity

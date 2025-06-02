@@ -71,7 +71,7 @@
             android:layout_weight="1"
             android:background="@drawable/button_navbar"
             android:textColor="@color/white"
-            android:text="Outcome" />
+            android:text="Income" />
         <Button
             android:id="@+id/uang_keluar_button"
             android:layout_width="0dp"

@@ -1,6 +1,7 @@
 package com.example.projectpambaru;
 
 public class Transaksi {
+    private String id;
     private String jenisTransaksi;
     private String nama;
     private String deskripsi;
@@ -10,12 +11,15 @@ public class Transaksi {
 
     }
 
-    public Transaksi(String jenisTransaksi, String nama, String deskripsi, double nominal) {
+    public Transaksi(String id, String jenisTransaksi, String nama, String deskripsi, double nominal) {
+        this.id = id;
         this.jenisTransaksi = jenisTransaksi;
         this.nama = nama;
         this.deskripsi = deskripsi;
         this.nominal = nominal;
     }
+
+    public String getId() { return id; }
 
     public String getJenisTransaksi() {
         return jenisTransaksi;

@@ -83,9 +83,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void login(String email, String password) {
             if (!validateForm()) return;
         FirebaseApp app = FirebaseApp.getInstance();
-        Log.d("FirebaseInit", "Firebase initialized with name: " + app.getName());
-        Log.d("FirebaseInit", "Firebase options: " + app.getOptions().getProjectId());
-
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override

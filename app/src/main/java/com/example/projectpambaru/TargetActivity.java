@@ -2,6 +2,7 @@ package com.example.projectpambaru;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,13 +47,13 @@ public class TargetActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         targetList = new ArrayList<>();
-        adapter = new TargetAdapter(targetList, id -> {databaseReference.child(id).removeValue();});
+        adapter = new TargetAdapter(targetList, this);
         recyclerView.setAdapter(adapter);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null){
             String userId = user.getUid();
-            databaseReference = FirebaseDatabase.getInstance().getReference(userId);
+            databaseReference = FirebaseDatabase.getInstance().getReference(userId).child("target");
         }
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -67,7 +68,6 @@ public class TargetActivity extends AppCompatActivity {
                 }
                 adapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(TargetActivity.this, "Gagal mengambil data", Toast.LENGTH_SHORT).show();

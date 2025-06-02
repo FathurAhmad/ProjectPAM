@@ -10,8 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -21,8 +23,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +40,8 @@ public class DashboardActivity extends AppCompatActivity {
     TransaksiAdapter adapter;
     List<Transaksi> transaksiList;
     DatabaseReference databaseReference;
+    int totalPemasukan;
+    int totalPengeluaran;
     TextView tvUsername;
     Button btn_logout;
 
@@ -42,23 +50,41 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dashboard);
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-
         recyclerView = findViewById(R.id.recyclerView);
+        transaksiList = new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        transaksiList = new ArrayList<>();
-        for (Transaksi item : DatabaseTransaksi.getTransaksiList()) {
-            transaksiList.add(new Transaksi(item.getJenisTransaksi(), item.getNama(), item.getDeskripsi(), item.getNominal()));
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+            databaseReference = FirebaseDatabase.getInstance().getReference(userId).child("transaksi");
+            ambilSemuaTransaksi();
+
         }
 
         nominal = findViewById(R.id.balance);
-        int total = DatabaseTransaksi.getNominal();
-        String format = formatAngka(total);
-        nominal.setText(String.valueOf("Rp" + format));
 
         adapter = new TransaksiAdapter(this, transaksiList);
         recyclerView.setAdapter(adapter);
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                transaksiList.clear();
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    Transaksi transaksi = data.getValue(Transaksi.class);
+                    if (transaksi != null) {
+                        transaksiList.add(transaksi);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(DashboardActivity.this, "Gagal mengambil data", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         Button home = findViewById(R.id.home_button);
         Button income = findViewById(R.id.uang_masuk_button);
@@ -101,6 +127,8 @@ public class DashboardActivity extends AppCompatActivity {
                 finish();
             });
         });
+
+
 
         home.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
@@ -147,5 +175,35 @@ public class DashboardActivity extends AppCompatActivity {
     public static String formatAngka (int angka) {
         DecimalFormat format = new DecimalFormat("#,###");
         return format.format(angka).replace(",", ".");
+    }
+
+    private void ambilSemuaTransaksi() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                totalPemasukan = 0;
+                totalPengeluaran = 0;
+
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    Transaksi transaksi = data.getValue(Transaksi.class);
+                    if (transaksi != null) {
+                        if ("pemasukan".equalsIgnoreCase(transaksi.getJenisTransaksi())) {
+                            totalPemasukan += transaksi.getNominal();
+                        } else if ("pengeluaran".equalsIgnoreCase(transaksi.getJenisTransaksi())) {
+                            totalPengeluaran += transaksi.getNominal();
+                        }
+                    }
+                }
+
+                int saldoAkhir = totalPemasukan - totalPengeluaran;
+
+                nominal.setText("Rp" + formatAngka(saldoAkhir));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(DashboardActivity.this, "Gagal mengambil data transaksi", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

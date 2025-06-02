@@ -1,5 +1,7 @@
 package com.example.projectpambaru;
 
+import static com.example.projectpambaru.DashboardActivity.formatAngka;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +16,12 @@ import java.util.List;
 
 public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.TargetViewHolder> {
     private List<Target> targetList;
-    private onTargetDeleteListener deleteListener;
+    private TargetActivity activity;
 
-    public interface onTargetDeleteListener {
-        void onDelete(String id); // id dari Firebase
-    }
 
-    public TargetAdapter(List<Target> targetList, onTargetDeleteListener deleteListener) {
+    public TargetAdapter(List<Target> targetList, TargetActivity activity) {
         this.targetList = targetList;
-        this.deleteListener = deleteListener;
+        this.activity = activity;
     }
 
     public class TargetViewHolder extends RecyclerView.ViewHolder {
@@ -40,13 +39,12 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.TargetView
         }
 
         public void bind(Target target) {
-            tvTarget.setText(target.target);
-            tvNominal.setText(String.valueOf(target.nominal));
-            markAsDone.setOnClickListener(v -> {
-                if (deleteListener != null && target.id != null) {
-                    deleteListener.onDelete(target.id); // kirim ID ke MainActivity
-                }
-            });
+            if (target != null) {
+                tvTarget.setText(target.target);
+                int nominal;
+                String format = formatAngka(target.nominal);
+                tvNominal.setText("Rp" + format);
+            }
         }
     }
 
@@ -62,6 +60,7 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.TargetView
     public void onBindViewHolder(@NonNull TargetViewHolder holder, int position) {
         Target target = targetList.get(position);
         holder.bind(target); // panggil bind()
+        holder.markAsDone.setOnClickListener(v -> activity.targetDelete(target.id));
     }
 
     @Override

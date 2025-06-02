@@ -52,7 +52,7 @@ public class TransaksiAdapter extends RecyclerView.Adapter<TransaksiAdapter.Tran
         holder.tvKategori.setText(transaksi.getJenisTransaksi());        // "Pemasukan" / "Pengeluaran"
         holder.tvTransaksi.setText(transaksi.getNama());                 // Nama transaksi
         holder.tvDeskripsi.setText(transaksi.getDeskripsi());            // Deskripsi
-        holder.tvJumlah.setText("Rp " + format);         // Nominal
+        holder.tvJumlah.setText("Rp" + format);         // Nominal
 
         // Pewarnaan nominal berdasarkan jenis
         if (transaksi.getJenisTransaksi().equalsIgnoreCase("pengeluaran")) {

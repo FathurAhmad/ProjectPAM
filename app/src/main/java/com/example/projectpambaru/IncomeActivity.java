@@ -30,13 +30,21 @@ import androidx.core.content.ContextCompat; // Tambahkan
 // Firebase Storage Imports
 import com.google.android.gms.tasks.OnFailureListener; // Tambahkan
 import com.google.android.gms.tasks.OnSuccessListener; // Tambahkan
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage; // Tambahkan
 import com.google.firebase.storage.StorageReference; // Tambahkan
 import com.google.firebase.storage.UploadTask; // Tambahkan
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID; // Tambahkan untuk membuat nama file unik
 
 import okhttp3.Call;
@@ -50,10 +58,10 @@ public class IncomeActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
     TransaksiAdapter adapter;
+    List<Transaksi> transaksiList;
     Button btnTambah;
     private Uri selectedFileUri;
     private TextView tvFileNameSelected;
-
     private DatabaseReference databaseReference;
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 101;
     private static final int PICK_FILE_REQUEST_CODE = 202;
@@ -63,26 +71,44 @@ public class IncomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_income);
-        storageReference = FirebaseStorage.getInstance().getReference();
+        transaksiList = new ArrayList<>();
         recyclerView = findViewById(R.id.income_list);
-
-        // Menambahkan objek Transaksi ke dalam listTransaksi
-
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-
-        // Membuat instance AdapterTransaksi
-        adapter = new TransaksiAdapter(this, DatabaseTransaksi.getTransaksiPemasukan());
+        adapter = new TransaksiAdapter(this, transaksiList);
         recyclerView.setAdapter(adapter);
 
-        btnTambah = findViewById(R.id.tambah_button);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
+            String userId = user.getUid();
+            databaseReference = FirebaseDatabase.getInstance().getReference(userId).child("transaksi");
+        }
 
-        btnTambah.setOnClickListener(new View.OnClickListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                showPopup();
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                transaksiList.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Transaksi transaksi = dataSnapshot.getValue(Transaksi.class);
+
+                    if (transaksi != null) {
+                        String jenis = transaksi.getJenisTransaksi();
+                        if ("Pemasukan".equals(jenis)) {
+                            transaksiList.add(transaksi);
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplicationContext(), "Gagal ambil data", Toast.LENGTH_SHORT).show();
             }
         });
+
+        btnTambah = findViewById(R.id.tambah_button);
+        btnTambah.setOnClickListener(v -> showPopup());
 
         Button home = findViewById(R.id.home_button);
         Button income = findViewById(R.id.uang_masuk_button);
@@ -125,26 +151,22 @@ private void showPopup() {
     LayoutInflater inflater = getLayoutInflater();
     View popupView = inflater.inflate(R.layout.tambah_transaksi, null);
 
-    // Buat AlertDialog
     AlertDialog.Builder builder = new AlertDialog.Builder(IncomeActivity.this);
     builder.setView(popupView);
 
     AlertDialog dialog = builder.create();
     dialog.show();
 
-    // Inisialisasi komponen UI dari popup
     TextView namaTransaksi = popupView.findViewById(R.id.nama_transaksi);
     TextView deskripsiTransaksi = popupView.findViewById(R.id.deskripsi_transaksi);
     TextView nominalTransaksi = popupView.findViewById(R.id.nominal_transaksi);
     Button btnPilihFile = popupView.findViewById(R.id.upload_file_button); // Inisialisasi tombol pilih file
     Button btnSimpan = popupView.findViewById(R.id.tambah_button); // Inisialisasi tombol simpan transaksi
 
-    // Listener untuk tombol "Pilih Bukti File" di dalam popup
     btnPilihFile.setOnClickListener(v -> {
         checkAndRequestStoragePermission(); // Meminta izin dan membuka picker
     });
 
-    // Listener untuk tombol "Simpan Transaksi" di dalam popup
     btnSimpan.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -152,7 +174,6 @@ private void showPopup() {
             String deskripsi = deskripsiTransaksi.getText().toString().trim();
             String nominalStr = nominalTransaksi.getText().toString().trim();
 
-            // --- Validasi Input ---
             if (nama.isEmpty()) {
                 namaTransaksi.setError("Nama transaksi tidak boleh kosong");
                 return;
@@ -173,25 +194,21 @@ private void showPopup() {
                 nominalTransaksi.setError("Nominal tidak valid");
                 return;
             }
-            // --- Akhir Validasi Input ---
 
-            // Tambahkan transaksi ke DatabaseTransaksi (lokal)
-            DatabaseTransaksi.tambahTransaksi(new Transaksi("Pemasukan", nama, deskripsi, nominal));
+            // Simpan ke Firebase (dan local kalau perlu)
+            simpanTransaksi("Pemasukan", nama, deskripsi, nominal);
 
-            // Perbarui RecyclerView
-            adapter.notifyDataSetChanged(); // Memberi tahu adapter bahwa data telah berubah
-
-            // --- Logika Upload File ke Firebase Storage ---
+            // Upload file jika ada
             if (selectedFileUri != null) {
                 uploadFileToSupabaseStorage(selectedFileUri);
             } else {
-                Toast.makeText(IncomeActivity.this, "Transaksi Pemasukan berhasil ditambahkan (tanpa bukti file).", Toast.LENGTH_SHORT).show();
+                Toast.makeText(IncomeActivity.this, "Transaksi berhasil disimpan.", Toast.LENGTH_SHORT).show();
             }
-            // --- Akhir Logika Upload File ---
 
-            dialog.dismiss(); // Tutup pop-up
+            dialog.dismiss();
         }
     });
+
 }
     // --- Metode untuk Izin dan Pemilihan File ---
     private void checkAndRequestStoragePermission() {
@@ -331,5 +348,28 @@ private void showPopup() {
             Toast.makeText(this, "Error saat membaca file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void simpanTransaksi(String jenis, String nama, String deskripsi, double nominal) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid(); // ID user login
+            DatabaseReference dbRef = FirebaseDatabase.getInstance()
+                    .getReference(userId)
+                    .child("transaksi");
+
+            String transaksiId = dbRef.push().getKey(); // ID unik transaksi
+
+            Transaksi transaksi = new Transaksi(transaksiId, jenis, nama, deskripsi, nominal);
+
+            dbRef.child(transaksiId).setValue(transaksi)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(this, "Transaksi berhasil ditambahkan", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Gagal menyimpan transaksi", Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
+
 
 }

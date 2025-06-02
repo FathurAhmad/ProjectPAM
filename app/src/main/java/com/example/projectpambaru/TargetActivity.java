@@ -17,6 +17,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,7 +49,12 @@ public class TargetActivity extends AppCompatActivity {
         adapter = new TargetAdapter(targetList, id -> {databaseReference.child(id).removeValue();});
         recyclerView.setAdapter(adapter);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("targets");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
+            String userId = user.getUid();
+            databaseReference = FirebaseDatabase.getInstance().getReference(userId);
+        }
+
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

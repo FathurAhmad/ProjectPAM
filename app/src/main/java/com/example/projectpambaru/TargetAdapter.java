@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,11 +30,13 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.TargetView
         public TextView tvNominal;
         public Button markAsDone;
 
+
         public TargetViewHolder(View itemView) {
             super(itemView);
             tvTarget = itemView.findViewById(R.id.tvTarget);
             tvNominal = itemView.findViewById(R.id.tvNominal); // diperbaiki
             markAsDone = itemView.findViewById(R.id.btn_mark_as_done);
+
         }
 
         public void bind(Target target) {

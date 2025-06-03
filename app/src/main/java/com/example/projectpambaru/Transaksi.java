@@ -1,26 +1,31 @@
 package com.example.projectpambaru;
 
+import android.net.Uri;
+
+import java.net.URI;
+
 public class Transaksi {
     private String id;
     private String jenisTransaksi;
     private String nama;
     private String deskripsi;
     private double nominal;
+    private Uri urlFile;
 
     public Transaksi() {
 
     }
 
-    public Transaksi(String id, String jenisTransaksi, String nama, String deskripsi, double nominal) {
+    public Transaksi(String id, String jenisTransaksi, String nama, String deskripsi, double nominal, Uri urlFile) {
         this.id = id;
         this.jenisTransaksi = jenisTransaksi;
         this.nama = nama;
         this.deskripsi = deskripsi;
         this.nominal = nominal;
+        this.urlFile = urlFile;
     }
 
     public String getId() { return id; }
-
     public String getJenisTransaksi() {
         return jenisTransaksi;
     }
@@ -35,4 +40,5 @@ public class Transaksi {
     public double getNominal() {
         return nominal;
     }
+    public Uri getUrlFile() { return urlFile; }
 }

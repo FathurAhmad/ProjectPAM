@@ -2,7 +2,6 @@ package com.example.projectpambaru;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -77,7 +76,7 @@ public class TargetActivity extends AppCompatActivity {
         btn_tambah_target = findViewById(R.id.btn_tambah_target);
         btn_tambah_target.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(TargetActivity.this);
-            View dialogView = getLayoutInflater().inflate(R.layout.tambah_target, null);
+            View dialogView = getLayoutInflater().inflate(R.layout.target_tambah, null);
             builder.setView(dialogView);
 
             AlertDialog dialog = builder.create(); // supaya bisa dismiss nanti

@@ -1,35 +1,32 @@
 package com.example.projectpambaru;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.Manifest; // Tambahkan
-import android.content.pm.PackageManager; // Tambahkan
-import android.database.Cursor; // Tambahkan
-import android.net.Uri; // Tambahkan
-import android.os.Build; // Tambahkan
-import android.provider.OpenableColumns; // Tambahkan
-import android.widget.Toast; // Pastikan ini sudah ada, jika belum tambahkan
 
-import androidx.annotation.NonNull; // Tambahkan
-import androidx.annotation.Nullable; // Tambahkan
-import androidx.core.app.ActivityCompat; // Tambahkan
-import androidx.core.content.ContextCompat; // Tambahkan
-
-// Firebase Storage Imports
-import com.google.android.gms.tasks.OnFailureListener; // Tambahkan
-import com.google.android.gms.tasks.OnSuccessListener; // Tambahkan
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,15 +34,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage; // Tambahkan
-import com.google.firebase.storage.StorageReference; // Tambahkan
-import com.google.firebase.storage.UploadTask; // Tambahkan
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID; // Tambahkan untuk membuat nama file unik
+import java.util.UUID;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -55,31 +49,35 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class IncomeActivity extends AppCompatActivity {
+
     RecyclerView recyclerView;
-    LinearLayoutManager layoutManager;
     TransaksiAdapter adapter;
     List<Transaksi> transaksiList;
-    Button btnTambah;
+    DatabaseReference databaseReference;
     private Uri selectedFileUri;
     private TextView tvFileNameSelected;
-    private DatabaseReference databaseReference;
+
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 101;
     private static final int PICK_FILE_REQUEST_CODE = 202;
-    private StorageReference storageReference;
+
+    private static final String SUPABASE_URL = "https://bisvlneeendtwzxtygpj.supabase.co";
+    private static final String SUPABASE_BUCKET = "income";
+    private static final String SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpc3ZsbmVlZW5kdHd6eHR5Z3BqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3OTM5NTksImV4cCI6MjA2NDM2OTk1OX0.CvM3dQKKrdkpB6Sh3346QgtzJq3hSCOjxjdiS3KQmlM"; // ganti dengan API key asli kamu
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_income);
+
         transaksiList = new ArrayList<>();
         recyclerView = findViewById(R.id.income_list);
-        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new TransaksiAdapter(this, transaksiList);
         recyclerView.setAdapter(adapter);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null){
+        if (user != null) {
             String userId = user.getUid();
             databaseReference = FirebaseDatabase.getInstance().getReference(userId).child("transaksi");
         }
@@ -90,12 +88,8 @@ public class IncomeActivity extends AppCompatActivity {
                 transaksiList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Transaksi transaksi = dataSnapshot.getValue(Transaksi.class);
-
-                    if (transaksi != null) {
-                        String jenis = transaksi.getJenisTransaksi();
-                        if ("Pemasukan".equals(jenis)) {
-                            transaksiList.add(transaksi);
-                        }
+                    if (transaksi != null && "Pemasukan".equals(transaksi.getJenisTransaksi())) {
+                        transaksiList.add(transaksi);
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -107,8 +101,7 @@ public class IncomeActivity extends AppCompatActivity {
             }
         });
 
-        btnTambah = findViewById(R.id.tambah_button);
-        btnTambah.setOnClickListener(v -> showPopup());
+        findViewById(R.id.tambah_button).setOnClickListener(v -> showPopup());
 
         Button home = findViewById(R.id.home_button);
         Button income = findViewById(R.id.uang_masuk_button);
@@ -144,32 +137,32 @@ public class IncomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
     }
-private void showPopup() {
-    // Inflate layout popup
-    selectedFileUri = null; // Reset selectedFileUri setiap kali popup dibuka
-    LayoutInflater inflater = getLayoutInflater();
-    View popupView = inflater.inflate(R.layout.tambah_transaksi, null);
 
-    AlertDialog.Builder builder = new AlertDialog.Builder(IncomeActivity.this);
-    builder.setView(popupView);
+    private void showPopup() {
+        selectedFileUri = null;
 
-    AlertDialog dialog = builder.create();
-    dialog.show();
+        View popupView = LayoutInflater.from(this).inflate(R.layout.transaksi_tambah, null);
+        AlertDialog dialog = new AlertDialog.Builder(this).setView(popupView).create();
+        dialog.show();
 
-    TextView namaTransaksi = popupView.findViewById(R.id.nama_transaksi);
-    TextView deskripsiTransaksi = popupView.findViewById(R.id.deskripsi_transaksi);
-    TextView nominalTransaksi = popupView.findViewById(R.id.nominal_transaksi);
-    Button btnPilihFile = popupView.findViewById(R.id.upload_file_button); // Inisialisasi tombol pilih file
-    Button btnSimpan = popupView.findViewById(R.id.tambah_button); // Inisialisasi tombol simpan transaksi
+        TextView namaTransaksi = popupView.findViewById(R.id.nama_transaksi);
+        TextView deskripsiTransaksi = popupView.findViewById(R.id.deskripsi_transaksi);
+        TextView nominalTransaksi = popupView.findViewById(R.id.nominal_transaksi);
+//        tvFileNameSelected = popupView.findViewById(R.id.file_name_textview); // Pastikan ID ini ada di XML
 
-    btnPilihFile.setOnClickListener(v -> {
-        checkAndRequestStoragePermission(); // Meminta izin dan membuka picker
-    });
+        Button btnPilihFile = popupView.findViewById(R.id.upload_file_button);
+        Button btnSimpan = popupView.findViewById(R.id.tambah_button);
 
-    btnSimpan.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
+        btnPilihFile.setOnClickListener(v -> checkAndRequestStoragePermission());
+
+        btnSimpan.setOnClickListener(v -> {
             String nama = namaTransaksi.getText().toString().trim();
             String deskripsi = deskripsiTransaksi.getText().toString().trim();
             String nominalStr = nominalTransaksi.getText().toString().trim();
@@ -178,6 +171,7 @@ private void showPopup() {
                 namaTransaksi.setError("Nama transaksi tidak boleh kosong");
                 return;
             }
+
             if (nominalStr.isEmpty()) {
                 nominalTransaksi.setError("Nominal tidak boleh kosong");
                 return;
@@ -195,30 +189,31 @@ private void showPopup() {
                 return;
             }
 
-            // Simpan ke Firebase (dan local kalau perlu)
-            simpanTransaksi("Pemasukan", nama, deskripsi, nominal);
+            String transaksiId = databaseReference.push().getKey();
+            Transaksi transaksi = new Transaksi(transaksiId, "Pemasukan", nama, deskripsi, nominal, null);
 
-            // Upload file jika ada
-            if (selectedFileUri != null) {
-                uploadFileToSupabaseStorage(selectedFileUri);
-            } else {
-                Toast.makeText(IncomeActivity.this, "Transaksi berhasil disimpan.", Toast.LENGTH_SHORT).show();
+            if (transaksiId != null) {
+                databaseReference.child(transaksiId).setValue(transaksi).addOnSuccessListener(aVoid -> {
+                    if (selectedFileUri != null) {
+                        uploadFileToSupabaseStorage(selectedFileUri, transaksiId);
+                    } else {
+                        Toast.makeText(this, "Transaksi berhasil disimpan", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(e -> Toast.makeText(this, "Gagal menyimpan transaksi", Toast.LENGTH_SHORT).show());
             }
 
             dialog.dismiss();
-        }
-    });
+        });
+    }
 
-}
-    // --- Metode untuk Izin dan Pemilihan File ---
     private void checkAndRequestStoragePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13 (API 33) ke atas
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, REQUEST_CODE_STORAGE_PERMISSION);
             } else {
                 openFilePicker();
             }
-        } else { // Android 12 (API 32) ke bawah
+        } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_STORAGE_PERMISSION);
             } else {
@@ -229,51 +224,42 @@ private void showPopup() {
 
     private void openFilePicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*"); // Untuk memilih semua jenis file
+        intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        try {
-            startActivityForResult(Intent.createChooser(intent, "Pilih Bukti Transaksi"), PICK_FILE_REQUEST_CODE);
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "Tidak ada aplikasi file manager terinstal.", Toast.LENGTH_SHORT).show();
-        }
+        startActivityForResult(Intent.createChooser(intent, "Pilih File"), PICK_FILE_REQUEST_CODE);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE_STORAGE_PERMISSION) {
-            boolean allPermissionsGranted = true;
+            boolean allGranted = true;
             for (int result : grantResults) {
                 if (result != PackageManager.PERMISSION_GRANTED) {
-                    allPermissionsGranted = false;
+                    allGranted = false;
                     break;
                 }
             }
-            if (allPermissionsGranted) {
-                openFilePicker();
-            } else {
-                Toast.makeText(this, "Izin penyimpanan ditolak. Tidak dapat memilih file.", Toast.LENGTH_SHORT).show();
-            }
+            if (allGranted) openFilePicker();
+            else Toast.makeText(this, "Izin ditolak. Tidak bisa pilih file.", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_FILE_REQUEST_CODE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == PICK_FILE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
             selectedFileUri = data.getData();
             String fileName = getFileName(selectedFileUri);
             if (tvFileNameSelected != null) {
                 tvFileNameSelected.setText("File terpilih: " + fileName);
             }
-            Toast.makeText(this, "File terpilih: " + fileName, Toast.LENGTH_SHORT).show();
         }
     }
 
-    // Helper method untuk mendapatkan nama file dari URI
     private String getFileName(Uri uri) {
         String result = null;
+
         if (uri.getScheme() != null && uri.getScheme().equals("content")) {
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
             try {
@@ -284,24 +270,26 @@ private void showPopup() {
                     }
                 }
             } finally {
-                if (cursor != null) {
-                    cursor.close();
+                if (cursor != null) cursor.close();
+            }
+        }
+
+        // Fallback jika result masih null
+        if (result == null) {
+            result = uri.getLastPathSegment();
+            if (result != null) {
+                int cut = result.lastIndexOf('/');
+                if (cut != -1 && cut < result.length() - 1) {
+                    result = result.substring(cut + 1);
                 }
             }
         }
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
-            }
-        }
+
         return result;
     }
 
-    private void uploadFileToSupabaseStorage(Uri fileUri) {
-        if (fileUri == null) return;
 
+    private void uploadFileToSupabaseStorage(Uri fileUri, String transaksiId) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(fileUri);
             byte[] fileBytes = new byte[inputStream.available()];
@@ -309,67 +297,36 @@ private void showPopup() {
             inputStream.close();
 
             String fileName = UUID.randomUUID().toString() + "_" + getFileName(fileUri);
-            String supabaseUrl = "https://bisvlneeendtwzxtygpj.supabase.co";
-            String bucketName = "income";
-            String uploadUrl = supabaseUrl + "/storage/v1/object/" + bucketName + "/" + fileName;
+            String uploadUrl = SUPABASE_URL + "/storage/v1/object/" + SUPABASE_BUCKET + "/" + fileName;
 
             OkHttpClient client = new OkHttpClient();
-
             RequestBody requestBody = RequestBody.create(fileBytes);
-
             Request request = new Request.Builder()
                     .url(uploadUrl)
-                    .header("apikey", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpc3ZsbmVlZW5kdHd6eHR5Z3BqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3OTM5NTksImV4cCI6MjA2NDM2OTk1OX0.CvM3dQKKrdkpB6Sh3346QgtzJq3hSCOjxjdiS3KQmlM")
-                    .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpc3ZsbmVlZW5kdHd6eHR5Z3BqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3OTM5NTksImV4cCI6MjA2NDM2OTk1OX0.CvM3dQKKrdkpB6Sh3346QgtzJq3hSCOjxjdiS3KQmlM")
+                    .header("apikey", SUPABASE_API_KEY)
+                    .header("Authorization", "Bearer " + SUPABASE_API_KEY)
                     .put(requestBody)
                     .build();
 
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    runOnUiThread(() -> Toast.makeText(IncomeActivity.this, "Upload gagal: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                    runOnUiThread(() -> Toast.makeText(IncomeActivity.this, "Upload gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    runOnUiThread(() -> {
-                        if (response.isSuccessful()) {
-                            String fileUrl = supabaseUrl + "/storage/v1/object/public/" + bucketName + "/" + fileName;
-                            Toast.makeText(IncomeActivity.this, "Upload ke Supabase berhasil!\n" + fileUrl, Toast.LENGTH_LONG).show();
-                            // Simpan URL ke database lokal atau remote
-                        } else {
-                            Toast.makeText(IncomeActivity.this, "Gagal upload Supabase: " + response.message(), Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    if (response.isSuccessful()) {
+                        String fileUrl = SUPABASE_URL + "/storage/v1/object/public/" + SUPABASE_BUCKET + "/" + fileName;
+                        databaseReference.child(transaksiId).child("gambarUrl").setValue(fileUrl);
+                        runOnUiThread(() -> Toast.makeText(IncomeActivity.this, "File berhasil diupload", Toast.LENGTH_SHORT).show());
+                    } else {
+                        runOnUiThread(() -> Toast.makeText(IncomeActivity.this, "Upload gagal: " + response.message(), Toast.LENGTH_SHORT).show());
+                    }
                 }
             });
-
         } catch (Exception e) {
-            Toast.makeText(this, "Error saat membaca file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Gagal membaca file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
-    private void simpanTransaksi(String jenis, String nama, String deskripsi, double nominal) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            String userId = user.getUid(); // ID user login
-            DatabaseReference dbRef = FirebaseDatabase.getInstance()
-                    .getReference(userId)
-                    .child("transaksi");
-
-            String transaksiId = dbRef.push().getKey(); // ID unik transaksi
-
-            Transaksi transaksi = new Transaksi(transaksiId, jenis, nama, deskripsi, nominal);
-
-            dbRef.child(transaksiId).setValue(transaksi)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Transaksi berhasil ditambahkan", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Gagal menyimpan transaksi", Toast.LENGTH_SHORT).show();
-                    });
-        }
-    }
-
-
 }

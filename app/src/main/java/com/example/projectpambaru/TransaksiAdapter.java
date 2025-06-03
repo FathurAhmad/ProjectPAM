@@ -15,11 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class TransaksiAdapter extends RecyclerView.Adapter<TransaksiAdapter.TransaksiViewHolder> {
-
+    private String halaman;
     private List<Transaksi> transaksiList;
     private LayoutInflater inflater;
 
     public TransaksiAdapter(Context context, List<Transaksi> transaksiList) {
+        this.halaman = context.getClass().getSimpleName();
         this.transaksiList = transaksiList;
         this.inflater = LayoutInflater.from(context);
     }
@@ -39,7 +40,11 @@ public class TransaksiAdapter extends RecyclerView.Adapter<TransaksiAdapter.Tran
     @NonNull
     @Override
     public TransaksiViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_text, parent, false);  // Ganti layout sesuai yang digunakan
+        if (this.halaman.equals("DashboardActivity")) {
+            View view = inflater.inflate(R.layout.item_dashboard, parent, false);  // Ganti layout sesuai yang digunakan
+            return new TransaksiViewHolder(view);
+        }
+        View view = inflater.inflate(R.layout.item_transaksi, parent, false);  // Ganti layout sesuai yang digunakan
         return new TransaksiViewHolder(view);
     }
 
@@ -54,11 +59,12 @@ public class TransaksiAdapter extends RecyclerView.Adapter<TransaksiAdapter.Tran
         holder.tvDeskripsi.setText(transaksi.getDeskripsi());            // Deskripsi
         holder.tvJumlah.setText("Rp" + format);         // Nominal
 
-        // Pewarnaan nominal berdasarkan jenis
-        if (transaksi.getJenisTransaksi().equalsIgnoreCase("pengeluaran")) {
-            holder.tvJumlah.setTextColor(Color.RED);
-        } else {
-            holder.tvJumlah.setTextColor(Color.GREEN);
+        if (halaman.equals("DashboardActivity")) {
+            if (transaksi.getJenisTransaksi().equalsIgnoreCase("pengeluaran")) {
+                holder.tvJumlah.setTextColor(Color.RED);
+            } else {
+                holder.tvJumlah.setTextColor(Color.GREEN);
+            }
         }
     }
 

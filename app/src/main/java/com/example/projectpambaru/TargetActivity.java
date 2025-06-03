@@ -52,7 +52,7 @@ public class TargetActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null){
             String userId = user.getUid();
-            databaseReference = FirebaseDatabase.getInstance().getReference(userId).child("target");
+            databaseReference = FirebaseDatabase.getInstance().getReference("target").child(userId);
         }
 
         databaseReference.addValueEventListener(new ValueEventListener() {

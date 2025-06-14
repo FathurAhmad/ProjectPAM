@@ -133,7 +133,6 @@ public class DashboardActivity extends AppCompatActivity {
             btn_logout = dialogView.findViewById(R.id.button_logout);
             tvUsername = dialogView.findViewById(R.id.tvUsername);
 
-
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             String username = firebaseAuth.getCurrentUser().getEmail();
             tvUsername.setText(username);

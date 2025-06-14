@@ -33,11 +33,19 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/item_layout"
         android:padding="10dp"/>
-<!--    -->
+    <Button
+        android:id="@+id/btn_addGambar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Upload Gambar"
+        android:background="@drawable/container_layout"
+        android:textColor="@color/white"/>
+
     <Button
         android:id="@+id/btn_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
         android:text="Submit"
         android:background="@drawable/container_layout"
         android:textColor="@color/white"/>

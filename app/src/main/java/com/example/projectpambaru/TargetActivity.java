@@ -60,7 +60,7 @@ public class TargetActivity extends AppCompatActivity {
     private Uri selectedFileUri;
     private TextView tvFileNameSelected;
     private static final String SUPABASE_URL = "https://bisvlneeendtwzxtygpj.supabase.co";
-    private static final String SUPABASE_BUCKET = "target";
+    private static final String SUPABASE_BUCKET = "outcome";
     private static final String SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpc3ZsbmVlZW5kdHd6eHR5Z3BqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3OTM5NTksImV4cCI6MjA2NDM2OTk1OX0.CvM3dQKKrdkpB6Sh3346QgtzJq3hSCOjxjdiS3KQmlM"; // ganti dengan API key asli kamu
 
 

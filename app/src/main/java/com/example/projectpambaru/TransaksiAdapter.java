@@ -7,10 +7,13 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -27,6 +30,7 @@ public class TransaksiAdapter extends RecyclerView.Adapter<TransaksiAdapter.Tran
 
     public static class TransaksiViewHolder extends RecyclerView.ViewHolder {
         TextView tvKategori, tvTransaksi, tvDeskripsi, tvJumlah;
+        ImageView imgTransaksi;
 
         public TransaksiViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -34,7 +38,9 @@ public class TransaksiAdapter extends RecyclerView.Adapter<TransaksiAdapter.Tran
             tvTransaksi = itemView.findViewById(R.id.tvTransaksi);     // ex: namaTransaksi
             tvDeskripsi = itemView.findViewById(R.id.tvDeskripsi);     // ex: deskripsiTransaksi
             tvJumlah = itemView.findViewById(R.id.tvJumlah);           // ex: nominalTransaksi
+            imgTransaksi = itemView.findViewById(R.id.ivTransaksi);
         }
+
     }
 
     @NonNull
@@ -59,6 +65,12 @@ public class TransaksiAdapter extends RecyclerView.Adapter<TransaksiAdapter.Tran
         holder.tvDeskripsi.setText(transaksi.getDeskripsi());            // Deskripsi
         holder.tvJumlah.setText("Rp" + format);         // Nominal
 
+        if (transaksi != null){
+            Glide.with(holder.itemView.getContext())
+                    .load(transaksi.getGambarUrl())
+                    .into(holder.imgTransaksi);
+        }
+
         if (halaman.equals("DashboardActivity")) {
             if (transaksi.getJenisTransaksi().equalsIgnoreCase("pengeluaran")) {
                 holder.tvJumlah.setTextColor(Color.RED);
@@ -66,6 +78,8 @@ public class TransaksiAdapter extends RecyclerView.Adapter<TransaksiAdapter.Tran
                 holder.tvJumlah.setTextColor(Color.GREEN);
             }
         }
+
+
     }
 
     @Override

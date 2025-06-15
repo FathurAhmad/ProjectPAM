@@ -44,13 +44,14 @@
             android:textSize="14sp"
             android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/tvLihatDetail"
+        <ImageView
+            android:id="@+id/ivTransaksi"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lihat Detail"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_gravity="end"/>
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:contentDescription="Transaksi Image"/>
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -66,6 +67,7 @@ public class DashboardActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
     int totalPemasukan;
     int totalPengeluaran;
+    ShapeableImageView iconProfile;
     ImageView imageViewProfile;
     TextView tvUsername;
     Button btn_logout;
@@ -89,12 +91,20 @@ public class DashboardActivity extends AppCompatActivity {
         transaksiList = new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        iconProfile = findViewById(R.id.profile_image);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String userId = user.getUid();
             databaseReference = FirebaseDatabase.getInstance().getReference(userId).child("transaksi");
             ambilSemuaTransaksi();
-
+            databaseReference.child("profileImageUrl").get().addOnSuccessListener(dataSnapshot -> {
+                String profileUrl = dataSnapshot.getValue(String.class);
+                if (profileUrl != null && !profileUrl.isEmpty()){
+                    Glide.with(this).load(profileUrl).circleCrop().into(iconProfile);
+                }else{
+                    iconProfile.setImageResource(R.drawable.profile_placeholder);
+                }
+            });
         }
 
         nominal = findViewById(R.id.balance);
@@ -125,7 +135,6 @@ public class DashboardActivity extends AppCompatActivity {
         Button income = findViewById(R.id.uang_masuk_button);
         Button outcome = findViewById(R.id.uang_keluar_button);
         Button target = findViewById(R.id.target_button);
-        ImageView iconProfile = findViewById(R.id.profile_image);
 
         iconProfile.setOnClickListener(v -> {
             LayoutInflater inflater = getLayoutInflater();
@@ -152,7 +161,6 @@ public class DashboardActivity extends AppCompatActivity {
                 startActivityForResult(intent, PICK_FILE_REQUEST_CODE);
             });
 
-
             btn_logout.setOnClickListener(v3 -> {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
@@ -160,8 +168,6 @@ public class DashboardActivity extends AppCompatActivity {
                 finish();
             });
         });
-
-
 
         home.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardActivity.this, DashboardActivity.class);
@@ -305,6 +311,7 @@ public class DashboardActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Toast.makeText(DashboardActivity.this, "Foto profil berhasil diupload", Toast.LENGTH_SHORT).show();
                             Glide.with(DashboardActivity.this).load(fileUrl).into(imageViewProfile);
+                            Glide.with(DashboardActivity.this).load(fileUrl).into(iconProfile);
                         });
                     } else {
                         runOnUiThread(() -> Toast.makeText(DashboardActivity.this, "Upload gagal: " + response.message(), Toast.LENGTH_SHORT).show());

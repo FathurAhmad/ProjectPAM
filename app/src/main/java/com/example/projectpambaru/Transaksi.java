@@ -10,19 +10,19 @@ public class Transaksi {
     private String nama;
     private String deskripsi;
     private double nominal;
-    private Uri urlFile;
+    private String gambarUrl;
 
     public Transaksi() {
 
     }
 
-    public Transaksi(String id, String jenisTransaksi, String nama, String deskripsi, double nominal, Uri urlFile) {
+    public Transaksi(String id, String jenisTransaksi, String nama, String deskripsi, double nominal, String gambarUrl) {
         this.id = id;
         this.jenisTransaksi = jenisTransaksi;
         this.nama = nama;
         this.deskripsi = deskripsi;
         this.nominal = nominal;
-        this.urlFile = urlFile;
+        this.gambarUrl = gambarUrl;
     }
 
     public String getId() { return id; }
@@ -40,5 +40,5 @@ public class Transaksi {
     public double getNominal() {
         return nominal;
     }
-    public Uri getUrlFile() { return urlFile; }
+    public String getGambarUrl() { return gambarUrl; }
 }

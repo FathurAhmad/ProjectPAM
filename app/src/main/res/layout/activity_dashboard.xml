@@ -15,12 +15,14 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
         android:gravity="center_vertical">
-        <ImageView
+
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/profile_image"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/profile_placeholder" />
+            android:src="@drawable/profile_placeholder"
+            app:shapeAppearanceOverlay="@style/CircleImageViewStyle"/>
 
         <TextView
             android:id="@+id/welcome"

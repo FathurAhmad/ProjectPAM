@@ -47,5 +47,14 @@
             android:textSize="14sp"
             android:textColor="#D32F2F"
             android:textStyle="bold"/>
+
+        <ImageView
+            android:id="@+id/ivTransaksi"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:contentDescription="Transaksi Image"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

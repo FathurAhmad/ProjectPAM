@@ -9,52 +9,58 @@
     card_view:cardElevation="4dp"
     card_view:cardBackgroundColor="@color/white">
 
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10dp">
-
-        <TextView
-            android:id="@+id/tvKategori"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pengeluaran"
-            android:layout_marginBottom="5dp"
-            android:textStyle="bold"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/tvTransaksi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Transaksi ke-n"
-            android:textSize="14sp"/>
-
-        <TextView
-            android:id="@+id/tvDeskripsi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Membeli barang"
-            android:textSize="14sp"/>
-
-        <TextView
-            android:id="@+id/tvJumlah"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Rp 50.000"
-            android:textSize="14sp"
-            android:textColor="#D32F2F"
-            android:textStyle="bold"/>
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/ivTransaksi"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:contentDescription="Transaksi Image"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="10dp">
+
+            <TextView
+                android:id="@+id/tvKategori"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pengeluaran"
+                android:layout_marginBottom="5dp"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tvTransaksi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Transaksi ke-n"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tvDeskripsi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Membeli barang"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tvJumlah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 50.000"
+                android:textSize="14sp"
+                android:textColor="#D32F2F"
+                android:textStyle="bold"/>
+        </LinearLayout>
     </LinearLayout>
+
+
 </androidx.cardview.widget.CardView>

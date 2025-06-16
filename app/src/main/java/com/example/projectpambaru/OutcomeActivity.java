@@ -68,10 +68,10 @@ public class OutcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_income);
+        setContentView(R.layout.activity_outcome);
 
         transaksiList = new ArrayList<>();
-        recyclerView = findViewById(R.id.income_list);
+        recyclerView = findViewById(R.id.outcome_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new TransaksiAdapter(this, transaksiList);
         recyclerView.setAdapter(adapter);

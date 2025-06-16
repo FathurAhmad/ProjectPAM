@@ -79,7 +79,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     private static final String SUPABASE_URL = "https://bisvlneeendtwzxtygpj.supabase.co";
     private static final String SUPABASE_BUCKET = "profile-pic";
-    private static final String SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpc3ZsbmVlZW5kdHd6eHR5Z3BqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3OTM5NTksImV4cCI6MjA2NDM2OTk1OX0.CvM3dQKKrdkpB6Sh3346QgtzJq3hSCOjxjdiS3KQmlM"; // ganti dengan API key asli kamu
+    private static final String SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpc3ZsbmVlZW5kdHd6eHR5Z3BqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3OTM5NTksImV4cCI6MjA2NDM2OTk1OX0.CvM3dQKKrdkpB6Sh3346QgtzJq3hSCOjxjdiS3KQmlM";
 
 
     @Override
@@ -97,8 +97,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         if (user != null) {
             String userId = user.getUid();
-
-            // Ambil URL dari root/userId/profileImageUrl
             rootRef.child(userId).child("profileImageUrl").get().addOnSuccessListener(dataSnapshot -> {
                 String profileUrl = dataSnapshot.getValue(String.class);
                 if (profileUrl != null && !profileUrl.isEmpty()) {
@@ -110,8 +108,6 @@ public class DashboardActivity extends AppCompatActivity {
                     iconProfile.setImageResource(R.drawable.profile_placeholder);
                 }
             });
-
-            // Tetap bisa ambil transaksi seperti biasa jika ingin
             databaseReference = rootRef.child(userId).child("transaksi");
             ambilSemuaTransaksi();
         }
@@ -150,20 +146,16 @@ public class DashboardActivity extends AppCompatActivity {
             LayoutInflater inflater = getLayoutInflater();
             View dialogView = inflater.inflate(R.layout.dialog_profile, null);
 
-            // Inisialisasi komponen
             btn_logout = dialogView.findViewById(R.id.button_logout);
             tvUsername = dialogView.findViewById(R.id.tvUsername);
             imageViewProfile = dialogView.findViewById(R.id.imageViewProfile);
             TextView textViewUbahProfile = dialogView.findViewById(R.id.textViewUbahFoto);
 
-            // Ambil user saat ini
 
             if (user != null) {
                 String userId = user.getUid();
                 String username = user.getEmail();
                 tvUsername.setText(username);
-
-                // Ambil URL foto profil dari Firebase
                 DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child(userId);
                 userRef.child("profileImageUrl").get().addOnSuccessListener(snapshot -> {
                     String profileUrl = snapshot.getValue(String.class);
@@ -179,22 +171,16 @@ public class DashboardActivity extends AppCompatActivity {
                     imageViewProfile.setImageResource(R.drawable.profile_placeholder);
                 });
             }
-
-            // Tampilkan dialog
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setView(dialogView);
             AlertDialog dialog = builder.create();
             dialog.show();
-
-            // Tombol untuk memilih gambar dari galeri
             textViewUbahProfile.setOnClickListener(v1 -> {
                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("image/*");
-                startActivityForResult(intent, PICK_FILE_REQUEST_CODE); // kamu harus punya variabel ini
-                dialog.dismiss(); // dialog ditutup setelah memilih foto
+                startActivityForResult(intent, PICK_FILE_REQUEST_CODE);
+                dialog.dismiss();
             });
-
-            // Logout
             btn_logout.setOnClickListener(v3 -> {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
@@ -334,15 +320,11 @@ public class DashboardActivity extends AppCompatActivity {
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.isSuccessful()) {
                         String fileUrl = SUPABASE_URL + "/storage/v1/object/public/" + SUPABASE_BUCKET + "/" + fileName;
-
-                        // Simpan ke Firebase Database user saat ini
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         if (user != null) {
                             String userId = user.getUid();
                             FirebaseDatabase.getInstance().getReference(userId).child("profileImageUrl").setValue(fileUrl);
                         }
-
-                        // Update imageViewProfile
                         runOnUiThread(() -> {
                             Toast.makeText(DashboardActivity.this, "Foto profil berhasil diupload", Toast.LENGTH_SHORT).show();
                             Glide.with(DashboardActivity.this).load(fileUrl).into(imageViewProfile);

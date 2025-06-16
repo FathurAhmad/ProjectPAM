@@ -34,10 +34,10 @@ public class TransaksiAdapter extends RecyclerView.Adapter<TransaksiAdapter.Tran
 
         public TransaksiViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvKategori = itemView.findViewById(R.id.tvKategori);       // ex: jenisTransaksi
-            tvTransaksi = itemView.findViewById(R.id.tvTransaksi);     // ex: namaTransaksi
-            tvDeskripsi = itemView.findViewById(R.id.tvDeskripsi);     // ex: deskripsiTransaksi
-            tvJumlah = itemView.findViewById(R.id.tvJumlah);           // ex: nominalTransaksi
+            tvKategori = itemView.findViewById(R.id.tvKategori);
+            tvTransaksi = itemView.findViewById(R.id.tvTransaksi);
+            tvDeskripsi = itemView.findViewById(R.id.tvDeskripsi);
+            tvJumlah = itemView.findViewById(R.id.tvJumlah);
             imgTransaksi = itemView.findViewById(R.id.ivTransaksi);
         }
 
@@ -47,10 +47,10 @@ public class TransaksiAdapter extends RecyclerView.Adapter<TransaksiAdapter.Tran
     @Override
     public TransaksiViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (this.halaman.equals("DashboardActivity")) {
-            View view = inflater.inflate(R.layout.item_dashboard, parent, false);  // Ganti layout sesuai yang digunakan
+            View view = inflater.inflate(R.layout.item_dashboard, parent, false);
             return new TransaksiViewHolder(view);
         }
-        View view = inflater.inflate(R.layout.item_transaksi, parent, false);  // Ganti layout sesuai yang digunakan
+        View view = inflater.inflate(R.layout.item_transaksi, parent, false);
         return new TransaksiViewHolder(view);
     }
 
@@ -60,10 +60,10 @@ public class TransaksiAdapter extends RecyclerView.Adapter<TransaksiAdapter.Tran
         int nominal = (int)transaksi.getNominal();
         String format = formatAngka(nominal);
 
-        holder.tvKategori.setText(transaksi.getJenisTransaksi());        // "Pemasukan" / "Pengeluaran"
-        holder.tvTransaksi.setText(transaksi.getNama());                 // Nama transaksi
-        holder.tvDeskripsi.setText(transaksi.getDeskripsi());            // Deskripsi
-        holder.tvJumlah.setText("Rp" + format);         // Nominal
+        holder.tvKategori.setText(transaksi.getJenisTransaksi());
+        holder.tvTransaksi.setText(transaksi.getNama());
+        holder.tvDeskripsi.setText(transaksi.getDeskripsi());
+        holder.tvJumlah.setText("Rp" + format);
 
         if (transaksi != null){
             Glide.with(holder.itemView.getContext())

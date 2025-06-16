@@ -62,7 +62,7 @@ public class IncomeActivity extends AppCompatActivity {
 
     private static final String SUPABASE_URL = "https://bisvlneeendtwzxtygpj.supabase.co";
     private static final String SUPABASE_BUCKET = "income";
-    private static final String SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpc3ZsbmVlZW5kdHd6eHR5Z3BqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3OTM5NTksImV4cCI6MjA2NDM2OTk1OX0.CvM3dQKKrdkpB6Sh3346QgtzJq3hSCOjxjdiS3KQmlM"; // ganti dengan API key asli kamu
+    private static final String SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpc3ZsbmVlZW5kdHd6eHR5Z3BqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg3OTM5NTksImV4cCI6MjA2NDM2OTk1OX0.CvM3dQKKrdkpB6Sh3346QgtzJq3hSCOjxjdiS3KQmlM";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +155,6 @@ public class IncomeActivity extends AppCompatActivity {
         TextView namaTransaksi = popupView.findViewById(R.id.nama_transaksi);
         TextView deskripsiTransaksi = popupView.findViewById(R.id.deskripsi_transaksi);
         TextView nominalTransaksi = popupView.findViewById(R.id.nominal_transaksi);
-//        tvFileNameSelected = popupView.findViewById(R.id.file_name_textview); // Pastikan ID ini ada di XML
 
         Button btnPilihFile = popupView.findViewById(R.id.upload_file_button);
         Button btnSimpan = popupView.findViewById(R.id.tambah_button);
@@ -273,8 +272,6 @@ public class IncomeActivity extends AppCompatActivity {
                 if (cursor != null) cursor.close();
             }
         }
-
-        // Fallback jika result masih null
         if (result == null) {
             result = uri.getLastPathSegment();
             if (result != null) {
